@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2 style="text-align:center; margin:2rem 0;">My Listings</h2>
+  <section class="product-grid">
+    {% if listings %}
+      {% for item in listings %}
+        <div
+          class="product-card"
+          data-id="{{ item._id }}"
+          title="Right‑click to delete"
+        >
+          <img src="{{ item.image_link or url_for('static', filename='img/placeholder.png') }}"
+               alt="{{ item.title }}">
+          <h3 class="product-title">{{ item.title }}</h3>
+          <p class="product-description">{{ item.description }}</p>
+          {% if item.price %}
+            <p class="product-price">${{ item.price }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <p style="text-align:center; color:#555;">
+        You haven’t posted anything yet.
+        <a href="{{ url_for('routes.add_listing') }}">Add your first listing</a>.
+      </p>
+    {% endif %}
+  </section>
+
+  <script>
+    document.querySelectorAll('.product-card').forEach(card => {
+      card.addEventListener('contextmenu', async e => {
+        e.preventDefault();
+        const id = card.dataset.id;
+        if (!confirm("Delete this listing?")) return;
+
+        const resp = await fetch(`/delete_listing/${id}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        if (resp.ok) {
+          // Remove from DOM or reload
+          card.remove();
+        } else {
+          alert("Failed to delete.");
+        }
+      });
+    });
+  </script>
+{% endblock %}

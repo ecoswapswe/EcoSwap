@@ -1,3 +1,12 @@
+/*────────────────────────────────────────────────────────────────*/
+/*  1) RESET & GLOBAL BASE                                          */
+/*────────────────────────────────────────────────────────────────*/
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: 'Arial', sans-serif;
   background-color: #fff;
@@ -6,13 +15,16 @@ body {
   padding: 0;
 }
 
+/*────────────────────────────────────────────────────────────────*/
+/*  2) HEADER                                                     */
+/*────────────────────────────────────────────────────────────────*/
 header {
   display: flex;
-  background-color: #fff;
-  padding: 20px 0;
   justify-content: space-between;
   align-items: flex-end;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+  padding: 20px 40px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
 }
 
 header .logo {
@@ -22,121 +34,313 @@ header .logo {
   color: #4fbd8f;
 }
 
-header nav {
-  margin-top: 10px;
-}
-
-header nav a {
-  color: #000;
-  margin: 0px;
-  margin-right: 25px;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1.2rem;
-  transition: color 0.2s ease;
-}
-
-header nav a:hover {
-  color: #4fbd8f;
-}
-
 header .search-bar {
-  margin-top: 15px;
+  display: flex;
+  align-items: center;
 }
 
 header .search-bar input {
   padding: 10px;
   border: 2px solid #000;
   border-radius: 5px;
-  border-color: #000;
-  width: 350px;
+  width: 300px;
   font-size: 1rem;
 }
 
 header .search-bar button {
   padding: 10px 20px;
-  font-size: 1rem;
   margin-left: 10px;
-  background-color: rgb(73, 72, 72);
+  background-color: #494848;
   border: none;
   color: #fff;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
-
 header .search-bar button:hover {
   background-color: #4fbd8f;
 }
 
-.hero {
-  height: 180px;
+header nav a {
+  font-size: 1.2rem;
+  font-weight: bold;
   color: #000;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  text-decoration: none;
+  margin-left: 25px;
+  transition: color 0.2s ease;
+}
+header nav a:hover {
+  color: #4fbd8f;
 }
 
-.hero h1 {
-  font-size: 1.5rem;
+header nav {
   display: flex;
-  flex-direction: row;
-  justify-content: start;
-  align-items: start;
-  margin: 0;
+  align-items: center;
+}
+
+header nav .greeting {
+  margin-right: 15px;
+  font-size: 1.5rem;
+  color: #2c7a2c;
+}
+
+/* ───────────────────────────────────────────────────────────── */
+/* Profile dropdown wrapper                                     */
+/* ───────────────────────────────────────────────────────────── */
+.profile-dropdown {
+  position: relative;
+  display: inline-block;
+  margin-left: 20px;
+}
+
+/* The button that toggles the menu */
+.profile-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #000;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.profile-btn:hover {
+  color: #4fbd8f;
+}
+
+/* The dropdown menu (hidden by default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: #fff;
+  min-width: 140px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  border-radius: 4px;
+  z-index: 1000;
+}
+
+/* Individual links inside */
+.dropdown-content a {
+  display: block;
+  padding: 8px 12px;
+  color: #333;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+/* Optional divider between group and logout */
+.dropdown-divider {
+  height: 1px;
+  background: #ddd;
+  margin: 4px 0;
+}
+
+/* Show the menu when hovering over the parent */
+.profile-dropdown:hover .dropdown-content {
+  display: block;
+}
+
+
+/*────────────────────────────────────────────────────────────────*/
+/*  3) HERO SECTION                                               */
+/*────────────────────────────────────────────────────────────────*/
+.hero {
+  padding: 60px 20px;
+  text-align: center;
+  background-color: #f5f5f5;
+}
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #2c7a2c;
   font-weight: bold;
 }
-
 .hero p {
-  font-size: 1.5rem;
-  margin: 10px 0;
+  font-size: 1.25rem;
+  color: #555;
 }
 
-.hero button:hover {
-  background-color: #dbbfc1;
-}
-
+/*────────────────────────────────────────────────────────────────*/
+/*  4) PRODUCT GRID                                               */
+/*────────────────────────────────────────────────────────────────*/
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 25px;
-  padding: 20px 20px;
+  padding: 40px 20px;
   max-width: 1200px;
   margin: 0 auto;
 }
-
 .product-card {
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
 }
-
-
+.product-card:hover {
+  transform: translateY(-5px);
+}
 .product-card img {
   width: 100%;
   height: 200px;
   object-fit: cover;
 }
-
 .product-card p {
-  margin: 0 10px 10px;
+  margin: 10px;
   color: #667;
+  font-size: 0.95rem;
 }
 
+.product-card-link {
+  display: block;         /* so it wraps the whole card */
+  text-decoration: none;  /* remove underline */
+  color: inherit;         /* keep your card’s text color */
+}
+.product-card-link .product-card:hover {
+  transform: translateY(-5px);  /* keep your hover effect */
+}
+
+/*────────────────────────────────────────────────────────────────*/
+/*  5) FOOTER                                                     */
+/*────────────────────────────────────────────────────────────────*/
 footer {
-  background-color: "white";
-  color: "black";
   text-align: center;
   padding: 20px 0;
+  background-color: #fff;
   margin-top: 40px;
 }
-
 footer p {
-  margin: 0;
   font-size: 0.9rem;
+  color: #555;
+}
+
+/*────────────────────────────────────────────────────────────────*/
+/*  6) LOGIN‑PAGE‑ONLY STYLES                                      */
+/*────────────────────────────────────────────────────────────────*/
+body.login-page {
+  background: linear-gradient(135deg, #e0f7fa 0%, #d0e8d0 100%);
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* visually hidden helper (if you use it in login.html) */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(1px,1px,1px,1px);
+  white-space: nowrap;
+}
+
+/* login card inside .login-page */
+.login-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  width: 320px;
+  text-align: center;
+}
+.eco-logo {
+  font-size: 2.25rem;
+  color: #2c7a2c;
+  margin-bottom: 0.5rem;
+}
+.form-title {
+  font-size: 1.25rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+.login-form input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  transition: border-color 0.2s;
+}
+.login-form input:focus {
+  border-color: #2ecc71;
+  outline: none;
+}
+.login-form button {
+  width: 100%;
+  padding: 0.75rem;
+  background: #2ecc71;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.login-form button:hover {
+  background: #28b463;
+}
+.signup-link {
+  margin-top: 1.25rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+.signup-link a {
+  color: #2ecc71;
+  text-decoration: none;
+  font-weight: 600;
+}
+.signup-link a:hover {
+  text-decoration: underline;
+}
+
+/*────────────────────────────────────────────────────────────────*/
+/*  7) LISTING FORM                                               */
+/*────────────────────────────────────────────────────────────────*/
+
+.listing-form-container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 1.5rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.listing-form-container h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #2c7a2c;
+}
+.listing-form-container form input,
+.listing-form-container form select,
+.listing-form-container form textarea {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #fff;
+  appearance: none;
+}
+.listing-form-container form button {
+  width: 100%;
+  padding: 0.75rem;
+  background: #2ecc71;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.listing-form-container form button:hover {
+  background: #28b463;
 }

@@ -73,13 +73,16 @@ login_manager.init_app(app)
 
 app.register_blueprint(routes_blueprint)
 
-
 @login_manager.user_loader
 def load_user(user_id):
-    user_data = user_collection.find_one({"_id": ObjectId(user_id)})
-    if user_data:
-        return User(user_data["_id"], user_data["email"], user_data["password"])
-    return None
+    user_doc = user_collection.find_one({"_id": ObjectId(user_id)})
+    if not user_doc:
+        return None
+    return User(
+        user_doc["_id"],
+        user_doc["username"],    # ← pull the username
+        user_doc["password"]
+    )
 
 
 @app.before_request

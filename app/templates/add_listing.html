@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="listing-form-container">
+  <h2>Add a New Listing</h2>
+  <form action="{{ url_for('routes.add_listing') }}" method="POST">
+    <input name="title"       type="text"     placeholder="Title"       required>
+    
+    <!-- Category dropdown -->
+    <select name="category" required>
+      <option value="" disabled selected>Select category</option>
+      <option value="Clothing">Clothing</option>
+      <option value="Electronics">Electronics</option>
+      <option value="Books">Books</option>
+      <option value="Home">Home</option>
+      <option value="Toys">Toys</option>
+      <option value="Outdoors">Outdoors</option>
+      <option value="Entertainment">Entertainment</option>
+    </select>
+  
+    <!-- Condition dropdown -->
+    <select name="condition" required>
+      <option value="" disabled selected>Select condition</option>
+      <option value="New">New</option>
+      <option value="Like New">Like New</option>
+      <option value="Good">Good</option>
+      <option value="Fair">Fair</option>
+      <option value="Poor">Poor</option>
+    </select>
+  
+    <input name="location"    type="text"     placeholder="Location"    required>
+    <input name="image_link"  type="url"      placeholder="Image URL"   required>
+    <textarea
+      name="description"
+      placeholder="Description"
+      rows="4"
+      required
+    ></textarea>
+    <button type="submit">Submit Listing</button>
+  </form>
+</div>
+{% endblock %}
+

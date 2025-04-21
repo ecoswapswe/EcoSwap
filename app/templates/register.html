@@ -1,27 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+  <!-- … -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
-<body>
-    <h2>Register</h2>
+<body class="login-page">
+  <div class="login-container">
+    <div class="login-card">
+      <h1 class="eco-logo">EcoSwap</h1>
+      <h2 class="form-title">Sign Up</h2>
 
-    <!-- Registration Form -->
-    <form action="{{ url_for('routes.register') }}" method="POST">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
+      <form
+        action="{{ url_for('routes.register') }}"
+        method="POST"
+        class="login-form"
+      >
+        <label for="username" class="visually-hidden">Username</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          placeholder="Username"
+          required
+        >
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
+        <label for="email" class="visually-hidden">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Email address"
+          required
+        >
 
-        <label for="confirm_password">Confirm Password:</label>
-        <input type="password" id="confirm_password" name="confirm_password" required><br><br>
+        <label for="password" class="visually-hidden">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Password"
+          required
+        >
 
-        <button type="submit">Register</button>
-    </form>
+        <label for="confirm_password" class="visually-hidden">Confirm Password</label>
+        <input
+          type="password"
+          id="confirm_password"
+          name="confirm_password"
+          placeholder="Confirm Password"
+          required
+        >
 
-    <p>Already have an account? <a href="{{ url_for('routes.login') }}">Login here</a></p>
+        <button type="submit">Sign Up</button>
+      </form>
+
+      <p class="signup-link">
+        Already have an account? 
+        <a href="{{ url_for('routes.login') }}">Log In here</a>
+      </p>
+    </div>
+  </div>
 </body>
 </html>

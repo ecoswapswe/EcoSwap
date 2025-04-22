@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2 class="pending-title">Pending Trades</h2>
+
+  <h3>Incoming Requests</h3>
+  {% if incoming %}
+    <ul class="pending-list">
+      {% for t in incoming %}
+        <li class="trade-item">
+          <div class="trade-details">
+            <strong>{{ t.from_username }}</strong>
+            wants your {{ t.to_title }} for their {{ t.from_title }}
+          </div>
+          <div class="trade-actions">
+            <form method="POST"
+                  action="{{ url_for('routes.respond_trade', trade_id=t._id, action='accept') }}">
+              <button type="submit" class="accept-btn">Accept</button>
+            </form>
+            <form method="POST"
+                  action="{{ url_for('routes.respond_trade', trade_id=t._id, action='decline') }}">
+              <button type="submit" class="decline-btn">Decline</button>
+            </form>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No incoming proposals.</p>
+  {% endif %}
+
+  <h3>My Swaps</h3>
+  {% if outgoing %}
+    <ul class="pending-list">
+      {% for t in outgoing %}
+        <li class="trade-item">
+          <div class="trade-details">
+            You requested {{ t.from_title }} from {{ t.to_username }}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No outgoing swaps.</p>
+  {% endif %}
+{% endblock %}

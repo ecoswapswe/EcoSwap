@@ -23,6 +23,7 @@ db = client.get_database()
 user_collection     = db.users
 user_collection.create_index("username", unique=True)
 listings_collection = db.listings
+trades_collection   = db.trades
 
 # -----------------------------------------------------------------------------
 # Flask‑Login user class

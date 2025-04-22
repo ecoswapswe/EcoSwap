@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2 class = "page-title">Request a Swap</h2>
+  <div class="swap-page">
+    <div class="other-listing">
+      <img src="{{ listing.image_link }}" alt="{{ listing.title }}">
+      <h3>{{ listing.title }}</h3>
+      <p>{{ listing.description }}</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('routes.swap_listing', listing_id=listing._id) }}">
+      <label for="my_listing">Choose one of your listings:</label>
+      <select id="my_listing" name="my_listing_id" required>
+        {% for mine in my_listings %}
+          <option value="{{ mine._id }}">{{ mine.title }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Request Swap</button>
+    </form>
+  </div>
+{% endblock %}

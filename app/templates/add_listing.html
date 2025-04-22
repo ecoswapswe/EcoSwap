@@ -2,7 +2,7 @@
 {% block content %}
 <div class="listing-form-container">
   <h2>Add a New Listing</h2>
-  <form action="{{ url_for('routes.add_listing') }}" method="POST">
+  <form action="{{ url_for('routes.add_listing') }}" method="POST" enctype="multipart/form-data">
     <input name="title"       type="text"     placeholder="Title"       required>
     
     <!-- Category dropdown -->
@@ -28,7 +28,9 @@
     </select>
   
     <input name="location"    type="text"     placeholder="Location"    required>
-    <input name="image_link"  type="url"      placeholder="Image URL"   required>
+    <label for="image_file">Upload Image:</label>
+    <input id="image_file" name="image_file" type="file" accept="image/*">
+    <input name="image_link" type="url" placeholder="Paste an image URL">
     <textarea
       name="description"
       placeholder="Description"

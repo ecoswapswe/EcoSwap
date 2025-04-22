@@ -1,7 +1,9 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, abort, current_app
+import os
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
-from app.userModel import User, user_collection, listings_collection
+from werkzeug.utils import  secure_filename
+from app.userModel import User, user_collection, listings_collection, trades_collection
 from bson import ObjectId
 from datetime import datetime
 
@@ -111,9 +113,23 @@ def add_listing():
     category    = request.form["category"]
     condition   = request.form["condition"]
     location    = request.form["location"]
-    image_link  = request.form["image_link"]
     # you can also auto‑stamp:
     date_posted = datetime.utcnow()
+
+    file = request.files.get("image_file")
+    if file and file.filename:
+        # ensure our upload folder exists
+        upload_dir = os.path.join(current_app.root_path, "static", "uploads")
+        os.makedirs(upload_dir, exist_ok=True)
+        # secure and save
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(upload_dir, filename)
+        file.save(filepath)
+        # build the public URL for Mongo
+        image_link = url_for("static", filename=f"uploads/{filename}")
+    else:
+        # fallback to any pasted URL (could be empty)
+        image_link = request.form.get("image_link", "").strip()
 
     # 2) Build your new listing document
     new_listing = {
@@ -160,6 +176,107 @@ def my_listings():
     listings = user_doc.get("listings", [])
     return render_template("my_listings.html", listings=listings)
 
+#----------- SWAP LISTINGS ------------------
+
+@routes_blueprint.route("/swap/<listing_id>", methods=["GET", "POST"])
+@login_required
+def swap_listing(listing_id):
+    # 1) fetch the other user’s listing
+    listing = listings_collection.find_one({"_id": ObjectId(listing_id)})
+    # 2) fetch current_user’s own listings
+    user_doc  = user_collection.find_one({"_id": ObjectId(current_user.get_id())})
+    my_listings = user_doc.get("listings", [])
+
+    if request.method == "POST":
+        mine_id = request.form["my_listing_id"]
+        # 3) insert a trade proposal
+        trades_collection.insert_one({
+          "from_user_id":   ObjectId(current_user.get_id()),
+          "to_user_id":     listing["user_id"],
+          "from_listing":   ObjectId(mine_id),
+          "to_listing":     ObjectId(listing_id),
+          "status":         "pending",
+          "date_proposed":  datetime.utcnow()
+        })
+        flash("Swap proposal sent!", "success")
+        return redirect(url_for("routes.pending_trades"))
+
+    return render_template("swap_listing.html",
+                           listing=listing,
+                           my_listings=my_listings)
+
+# ---------- PENDING SWAPS ----------
+
+@routes_blueprint.route("/pending_trades")
+@login_required
+def pending_trades():
+    uid = ObjectId(current_user.get_id())
+
+    # Build a list of incoming proposals, with usernames + titles
+    incoming = []
+    for t in trades_collection.find({"to_user_id": uid, "status": "pending"}):
+        sender      = user_collection.find_one({"_id": t["from_user_id"]})
+        listing_from = listings_collection.find_one({"_id": t["from_listing"]})
+        listing_to   = listings_collection.find_one({"_id": t["to_listing"]})
+        if not sender or not listing_from or not listing_to:
+            continue
+        incoming.append({
+            "_id":           t["_id"],
+            "from_username": sender["username"],
+            "from_title":    listing_from["title"],
+            "to_title":      listing_to["title"],
+            "status":        t["status"]
+        })
+
+    # Build a list of all proposals you’ve made, with titles + status
+    outgoing = []
+    for t in trades_collection.find({"from_user_id": uid}):
+        receiver = user_collection.find_one({"_id": t["to_user_id"]})
+        listing_from = listings_collection.find_one({"_id": t["from_listing"]})
+        listing_to   = listings_collection.find_one({"_id": t["to_listing"]})
+        if not listing_from or not listing_to:
+            continue
+        
+        outgoing.append({
+            "_id":        t["_id"],
+            "from_title": listing_from["title"],
+            "to_title":   listing_to["title"],
+            "to_username": receiver["username"],
+            "status":     t["status"]
+        })
+
+    return render_template(
+        "pending_trades.html",
+        incoming=incoming,
+        outgoing=outgoing
+    )
+
+@routes_blueprint.route("/trade/<trade_id>/<action>", methods=["POST"])
+@login_required
+def respond_trade(trade_id, action):
+    # look up the trade
+    trade = trades_collection.find_one({"_id": ObjectId(trade_id)})
+    if not trade:
+        abort(404)
+
+    # only the recipient may respond
+    if trade["to_user_id"] != ObjectId(current_user.get_id()):
+        abort(403)
+
+    # set new status
+    new_status = "accepted" if action == "accept" else "declined"
+    trades_collection.update_one(
+        {"_id": ObjectId(trade_id)},
+        {"$set": {
+            "status":         new_status,
+            "date_responded": datetime.utcnow()
+        }}
+    )
+    flash(f"Trade {new_status}.", "info")
+    return redirect(url_for("routes.pending_trades"))
+
+
+
 #-----------DELETE LISTINGS------------------
 from flask import jsonify
 from bson import ObjectId
@@ -178,6 +295,14 @@ def delete_listing(listing_id):
         {"_id": user_oid},
         {"$pull": {"listings": {"_id": list_oid}}}
     )
+
+    # 3) CASCADE: remove any pending trades involving this listing
+    trades_collection.delete_many({
+        "$or": [
+            {"proposer_listing_id": list_oid},
+            {"receiver_listing_id": list_oid}
+        ]
+    })
 
     return jsonify({"status": "ok"}), 200
 

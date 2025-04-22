@@ -11,6 +11,8 @@
       {% for product in products %}
         {% if product.user_id == current_user.get_id() %}
           <a href="{{ url_for('routes.my_listings') }}" class="product-card-link">
+        {% else %}
+          <a href="{{ url_for('routes.swap_listing', listing_id=product._id) }}" class="product-card-link">
         {% endif %}
   
         <div class="product-card">
@@ -24,10 +26,7 @@
             <p class="product-price">${{ product.price }}</p>
           {% endif %}
         </div>
-  
-        {% if product.user_id == current_user.get_id() %}
           </a>
-        {% endif %}
       {% endfor %}
     {% else %}
       <p style="text-align:center; color:#555;">No listings found.</p>

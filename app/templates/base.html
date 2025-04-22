@@ -7,47 +7,46 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-  <header>
-    <div class="logo">EcoSwap</div>
+  <div class="wrapper">
+    <header>
+      <div class="logo">EcoSwap</div>
 
-    <div class="search-bar">
-      <input id="search-box"
-             type="text"
-             placeholder="Search for products..."
-             value="{{ search_query or '' }}">
-      <button type="button">Search</button>
-    </div>
+      <div class="search-bar">
+        <input id="search-box"
+               type="text"
+               placeholder="Search for products..."
+               value="{{ search_query or '' }}">
+        <button type="button">Search</button>
+      </div>
 
-    <nav>
-      {% if current_user.is_authenticated %}
-        <a href="{{ url_for('routes.landing_page') }}">Home</a>
-
-        <div class="profile-dropdown">
-          <button class="profile-btn">
-            Profile ▾
-          </button>
-          <div class="dropdown-content">
-            <a href="{{ url_for('routes.my_listings') }}">My Listings</a>
-            <a href="{{ url_for('routes.add_listing') }}">Add Listing</a>
-            <div class="dropdown-divider"></div>
-            <a href="{{ url_for('routes.logout') }}">Log Out</a>
+      <nav>
+        {% if current_user.is_authenticated %}
+          <a href="{{ url_for('routes.landing_page') }}">Home</a>
+          <div class="profile-dropdown">
+            <button class="profile-btn">Profile ▾</button>
+            <div class="dropdown-content">
+              <a href="{{ url_for('routes.my_listings') }}">My Listings</a>
+              <a href="{{ url_for('routes.add_listing') }}">Add Listing</a>
+              <a href="{{ url_for('routes.pending_trades') }}">Pending Trades</a>
+              <div class="dropdown-divider"></div>
+              <a href="{{ url_for('routes.logout') }}">Log Out</a>
+            </div>
           </div>
-        </div>
+        {% else %}
+          <a href="{{ url_for('routes.login') }}">Log In</a>
+          <a href="{{ url_for('routes.register') }}">Sign Up</a>
+        {% endif %}
+      </nav>
+    </header>
 
-      {% else %}
-        <a href="{{ url_for('routes.login') }}">Log In</a>
-        <a href="{{ url_for('routes.register') }}">Sign Up</a>
-      {% endif %}
-    </nav>
-  </header>
+    <main>
+      {% block content %}{% endblock %}
+    </main>
 
-  <main>
-    {% block content %}{% endblock %}
-  </main>
-
-  <footer>
-    <p>&copy; 2025 EcoSwap</p>
-  </footer>
+    <footer>
+      <p>&copy; 2025 EcoSwap</p>
+    </footer>
+  </div><!-- /.wrapper -->
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   <script>
@@ -56,8 +55,7 @@
       sb.addEventListener('input', function() {
         const v = this.value.toLowerCase();
         document.querySelectorAll('.product-card').forEach(card => {
-          const title = card.querySelector('.product-title')
-                             .innerText.toLowerCase();
+          const title = card.querySelector('.product-title').innerText.toLowerCase();
           card.style.display = title.includes(v) ? 'block' : 'none';
         });
       });
@@ -65,3 +63,4 @@
   </script>
 </body>
 </html>
+

@@ -183,19 +183,30 @@ header nav .greeting {
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  height: 350px;
 }
 .product-card:hover {
   transform: translateY(-5px);
 }
 .product-card img {
   width: 100%;
-  height: 200px;
-  object-fit: cover;
+  height: auto;
+  object-fit: contain;
+  max-height: 200px;
+  background: #fff;
+}
+.product-card h3,
+.product-card p {
+  margin: 0.5rem;
 }
 .product-card p {
-  margin: 10px;
+  flex: 1;
+  overflow: hidden;
+  /* margin: 10px;
   color: #667;
-  font-size: 0.95rem;
+  font-size: 0.95rem; */
 }
 
 .product-card-link {
@@ -208,11 +219,143 @@ header nav .greeting {
 }
 
 /*────────────────────────────────────────────────────────────────*/
-/*  5) FOOTER                                                     */
+/*  5) REQUESTING SWAP                                               */
+/*────────────────────────────────────────────────────────────────*/
+.swap-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  /* center the block and cap its size: */
+  margin: 2rem auto;
+  width: 90%;        /* leave a bit of breathing room */
+  max-width: 600px;  /* container will never exceed 600px */
+  gap: 2rem;
+}
+
+.swap-page .other-listing,
+.swap-page form {
+  width: 100%;        /* fill the 600px container */
+  background: #fafafa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.swap-page .other-listing {
+  width: 100%;
+  max-width: 500px;    /* tweak to taste */
+  margin: 0 auto;      /* center the box */
+}
+
+/* center the page title */
+.page-title {
+  text-align: center;
+  margin: 2rem 0;
+}
+.swap-page .other-listing img {
+  display: block;
+  width: 100%;
+  height: auto;        /* preserve aspect ratio */
+  object-fit: contain; /* letterbox so nothing is cropped */
+}
+.swap-page form select,
+.swap-page form button {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+.swap-page form button {
+  background: #28a745;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+.swap-page form button:hover {
+  background: #218838;
+}
+
+/*────────────────────────────────────────────────────────────────*/
+/*  6) PENDING SWAPS                                               */
+/*────────────────────────────────────────────────────────────────*/
+/* 1) Center the main “Pending Trades” title */
+/* .pending-title {
+  text-align: center;
+  margin: 3rem auto 1.5rem;
+} */
+
+/* 2) Give a gap after your incoming list before the next heading */
+.pending-list {
+  margin-bottom: 3rem;   /* ← space before “My Proposals” */
+}
+
+/* 3) Stack each trade’s text and buttons vertically */
+.trade-item {
+  max-width: 600px;    /* cap it at 600px */
+  width: 80%;          /* or whatever percentage you prefer */
+  /* keep your existing flex‐column layout and padding */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+  /* center it if you like, or leave it left‐aligned */
+  /* margin: 0 auto 1rem; */ 
+  margin-bottom: 1rem;
+}
+
+/* 4) Give a bit of breathing room above the buttons */
+.trade-actions {
+  margin-top: 1rem;      /* keep that gap above the buttons */
+  display: flex;         /* lay children out in a row */
+  gap: 0.5rem;           /* space between the buttons */
+}
+
+.pending-trades h3, /* if you wrap this page in a .pending-trades container */
+h3 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* 5) Space the Accept/Decline buttons apart */
+.trade-actions form {
+  margin: 0;
+}
+.trade-actions button {
+  margin-left: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.accept-btn {
+  background: #28a745;
+  color: #fff;
+}
+.accept-btn:hover {
+  background: #218838;
+}
+.decline-btn {
+  background: #dc3545;
+  color: #fff;
+}
+.decline-btn:hover {
+  background: #c82333;
+}
+
+/*────────────────────────────────────────────────────────────────*/
+/*  7) FOOTER                                                     */
 /*────────────────────────────────────────────────────────────────*/
 footer {
   text-align: center;
-  padding: 20px 0;
+  padding: 1rem;
   background-color: #fff;
   margin-top: 40px;
 }
@@ -222,7 +365,7 @@ footer p {
 }
 
 /*────────────────────────────────────────────────────────────────*/
-/*  6) LOGIN‑PAGE‑ONLY STYLES                                      */
+/*  8) LOGIN‑PAGE‑ONLY STYLES                                      */
 /*────────────────────────────────────────────────────────────────*/
 body.login-page {
   background: linear-gradient(135deg, #e0f7fa 0%, #d0e8d0 100%);
@@ -301,7 +444,7 @@ body.login-page {
 }
 
 /*────────────────────────────────────────────────────────────────*/
-/*  7) LISTING FORM                                               */
+/*  9) LISTING FORM                                               */
 /*────────────────────────────────────────────────────────────────*/
 
 .listing-form-container {
@@ -343,4 +486,19 @@ body.login-page {
 }
 .listing-form-container form button:hover {
   background: #28b463;
+}
+
+html, body {
+  height: 100%; 
+  margin: 0;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; 
+}
+
+main {
+  flex: 1;
 }

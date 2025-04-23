@@ -13,12 +13,13 @@ client = MongoClient(
 )
 
 db = client.get_database("ecoswap")
+
 # -----------------------------------------------------------------------------
 # Select your database and users collection
 # -----------------------------------------------------------------------------
 # If your URI includes "/ecoswap", then get_database() will pick that up.
 # You can also do client.get_database("ecoswap") explicitly.
-db = client.get_database()
+#db = client.get_database()
 
 user_collection     = db.users
 user_collection.create_index("username", unique=True)

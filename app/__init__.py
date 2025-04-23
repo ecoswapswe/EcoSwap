@@ -1,48 +1,4 @@
-'''
-from flask import Flask
-from flask_pymongo import PyMongo
-from flask_login import LoginManager
-import firebase_admin
-from firebase_admin import credentials
-from config import settings
-from app.userModel import User
-from bson import ObjectId
-from app.routes import routes_blueprint
 
-app = Flask(__name__)
-app.config["MONGO_URI"] = settings.MONGO_URI 
-app.secret_key = settings.SECRET_KEY
-
-# Set up MongoDB
-mongo = PyMongo(app)
-
-# Set up Firebase
-cred = credentials.Certificate(settings.FIREBASE_CREDENTIAL_PATH)
-firebase_admin.initialize_app(cred)
-
-# Initialize Flask-Login
-login_manager = LoginManager()
-login_manager.login_view = "routes.login"
-login_manager.init_app(app)
-
-app.register_blueprint(routes_blueprint)
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    user_data = mongo.db.users.find_one({"_id": ObjectId(user_id)})
-    if user_data:
-        return User(user_data["_id"], user_data["email"], user_data["password"])
-    return None
-
-
-from flask import g
-
-@app.before_request
-def before_request():
-    g.mongo = mongo 
-
-'''
 from flask import Flask, render_template, request, g
 from flask_login import LoginManager
 import firebase_admin
@@ -57,16 +13,16 @@ app = Flask(__name__)
 app.config["MONGO_URI"] = settings.MONGO_URI 
 app.secret_key = settings.SECRET_KEY
 
-# ✅ Set up MongoDB with MongoClient
+# Set up MongoDB with MongoClient
 client = MongoClient("mongodb+srv://aditya8mal:5H9LQHZqYl33mYlu@ecoswap.rodew.mongodb.net/")
 db = client["ecoswap"]
 user_collection = db["users"]
 
-# ✅ Set up Firebase
+# Set up Firebase
 cred = credentials.Certificate(settings.FIREBASE_CREDENTIAL_PATH)
 firebase_admin.initialize_app(cred)
 
-# ✅ Initialize Flask-Login
+# Initialize Flask-Login
 login_manager = LoginManager()
 login_manager.login_view = "routes.login"
 login_manager.init_app(app)
@@ -90,7 +46,7 @@ def before_request():
     g.user_collection = user_collection  # Store MongoDB collection in g
 
 
-# ✅ **Updated Home Route: Fetch Listings from Users**
+# **Updated Home Route: Fetch Listings from Users**
 @app.route('/')
 def home():
     search_query = request.args.get('search', '').strip()
@@ -103,7 +59,12 @@ def home():
 
     if search_query:
         pipeline.append({
-            "$match": {"title": {"$regex": search_query, "$options": "i"}}
+             "$match": {
+                "$or": [
+                    {"title": {"$regex": search_query, "$options": "i"}},
+                    {"location": {"$regex": search_query, "$options": "i"}}
+                ]
+            }
         })
 
     listings = list(user_collection.aggregate(pipeline))
@@ -111,7 +72,7 @@ def home():
     return render_template('index.html', products=listings, search_query=search_query)
 
 
-# ✅ **Route to Add a New Listing to a User**
+# **Route to Add a New Listing to a User**
 @app.route('/add_listing', methods=['POST'])
 def add_listing():
     if not request.form.get("user_id"):

@@ -25,6 +25,9 @@
           {% if product.price %}
             <p class="product-price">${{ product.price }}</p>
           {% endif %}
+          {% if product.location %}
+            <p class="product-location">📍 {{ product.location }}</p>
+          {% endif %}
         </div>
           </a>
       {% endfor %}

@@ -91,6 +91,7 @@ def landing_page():
         products = [
             p for p in products
             if search_query in p.get("title", "").lower()
+            or search_query in p.get("location", "").lower() # atemot to ad location search functionality as well 
         ]
 
     return render_template(
@@ -157,6 +158,7 @@ def add_listing():
             "description": description,
             "image_link":  image_link,
             "date_posted": date_posted
+
         }}}
     )
 
